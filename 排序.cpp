@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <ctime>
 #include <cstdlib>
+#include <algorithm>
 
 using namespace std;
 void BubbleSort(int arr[], int size);
@@ -25,7 +26,7 @@ int main()
 	}
 	cout << endl;
 
-	InsertSort(arr,10);
+	QuickSort(arr,10);
 	for (int v : arr)
 	{
 		cout << v << " ";
@@ -111,6 +112,12 @@ void QuickSort(int arr[], int begin, int end)  //begin为左端，end为右端
 	{
 		return;
 	}
+	//if (end - begin <= 50)      //快速排序优化，当序列趋近有序时使用插入排序
+	//{
+	//	InsertSort(arr, begin, end);
+	//	return;
+	//}
+	
 	//根据基准数对[begin,ebd]进行排序分割处理
 	int pos = Partation(arr, begin, end);
 	//对基准数左边序列和右边序列分别再次进行快速排序
@@ -120,7 +127,23 @@ void QuickSort(int arr[], int begin, int end)  //begin为左端，end为右端
 //快速排序分割处理函数
 int Partation(int arr[], int left, int right)
 {
-	int val = arr[left];    //基准数
+	//int val = arr[left];    //基准数
+	//优化：基准数的选取，选择arr[left],arr[right],arr[(left+right)/2]中大小位于中间的值作为基准数
+	int mid = (left + right) / 2;
+	int baseNum = left;
+	if ((arr[left] <= arr[mid] && arr[mid] <= arr[right]) || 
+		                       (arr[left] >= arr[mid] && arr[mid] >= arr[right]))
+	{
+		baseNum = mid;
+	}
+	else if ((arr[left] <= arr[right] && arr[right] <= arr[mid]) ||
+		                        (arr[left] >= arr[right] && arr[right] >= arr[mid]))
+	{
+		baseNum = right;
+	}
+	swap(arr[left], arr[mid]);       //将3数中位数交换到left处
+	int val = arr[left];
+
 	//快速排序处理
 	while (left < right)
 	{
